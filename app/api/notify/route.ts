@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 import { sendEmail } from '@/lib/notify/email'
 import { sendKakaoMessage } from '@/lib/notify/kakao'
 import { sendWebPush } from '@/lib/notify/webpush'
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   const today = new Date()
 
   // 접수 마감이 N일 후인 대회의 구독자에게 알림 발송
-  const { data: subscriptions, error } = await supabaseAdmin
+  const { data: subscriptions, error } = await getSupabaseAdmin()
     .from('subscriptions')
     .select('*, races(*)')
 

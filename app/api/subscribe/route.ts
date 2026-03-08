@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: '대회 ID와 이메일은 필수입니다.' }, { status: 400 })
   }
 
-  const { error } = await supabaseAdmin.from('subscriptions').upsert(
+  const { error } = await getSupabaseAdmin().from('subscriptions').upsert(
     {
       race_id,
       email,

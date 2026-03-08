@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { crawlMarathonOnline } from '@/lib/crawler/marathon-online'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'No races found', count: 0 })
     }
 
-    const { error } = await supabaseAdmin.from('races').upsert(
+    const { error } = await getSupabaseAdmin().from('races').upsert(
       races.map((r) => ({
         title: r.title,
         date: r.date,
