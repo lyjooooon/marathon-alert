@@ -9,7 +9,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2025-12-01',
     registration_end: '2026-02-15',
-    url: 'https://www.donga-marathon.com',
+    url: 'https://marathon.donga.com',
     source: 'sample',
   },
   {
@@ -19,7 +19,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km', '5km'],
     registration_start: '2026-01-10',
     registration_end: '2026-03-15',
-    url: 'https://www.gyeongjumarathon.com',
+    url: 'https://www.gyeongjumarathon.or.kr',
     source: 'sample',
   },
   {
@@ -39,7 +39,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2026-05-01',
     registration_end: '2026-10-01',
-    url: 'https://www.jtbcmarathon.com',
+    url: 'http://marathon.jtbc.com/',
     source: 'sample',
   },
   {
@@ -49,7 +49,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km', '5km'],
     registration_start: '2026-02-01',
     registration_end: '2026-05-10',
-    url: 'https://www.jejumarathon.com',
+    url: 'http://jeju-marathon.com/kor/',
     source: 'sample',
   },
   {
@@ -59,7 +59,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2026-01-15',
     registration_end: '2026-03-25',
-    url: 'https://www.daegumarathon.com',
+    url: 'https://daegumarathon.daegu.go.kr/',
     source: 'sample',
   },
   {
@@ -69,7 +69,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2026-01-05',
     registration_end: '2026-03-20',
-    url: 'https://www.busanmarathon.com',
+    url: 'https://www.busanmarathon.or.kr',
     source: 'sample',
   },
   {
@@ -79,7 +79,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km', '5km'],
     registration_start: '2026-06-01',
     registration_end: '2026-09-10',
-    url: 'https://www.incheonmarathon.com',
+    url: 'https://songdorun.net/',
     source: 'sample',
   },
   {
@@ -89,7 +89,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2026-02-01',
     registration_end: '2026-04-15',
-    url: 'https://www.gjmarathon.co.kr',
+    url: 'http://mara.kjmedia.co.kr/',
     source: 'sample',
   },
   {
@@ -129,7 +129,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2025-12-15',
     registration_end: '2026-03-08',
-    url: 'https://www.changwonmarathon.com',
+    url: 'https://kcmarathon.co.kr/',
     source: 'sample',
   },
   {
@@ -139,7 +139,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km', '5km'],
     registration_start: '2026-06-01',
     registration_end: '2026-08-25',
-    url: 'https://www.gangneungmarathon.com',
+    url: 'https://kw-marathon.com/',
     source: 'sample',
   },
   {
@@ -159,7 +159,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2026-05-01',
     registration_end: '2026-08-20',
-    url: 'https://www.seoulwomenmarathon.com',
+    url: 'http://www.womenmarathon.co.kr/',
     source: 'sample',
   },
   {
@@ -189,7 +189,7 @@ const sampleRaces = [
     distances: ['풀코스'],
     registration_start: '2026-02-20',
     registration_end: '2026-05-01',
-    url: 'https://www.kolonmarathon.com',
+    url: 'https://marathon.co.kr/marathon.asp',
     source: 'sample',
   },
   {
@@ -199,7 +199,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2026-06-15',
     registration_end: '2026-09-30',
-    url: 'https://www.chosunmarathon.com',
+    url: 'https://www.chuncheonmarathon.com/',
     source: 'sample',
   },
 ]
