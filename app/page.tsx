@@ -1,101 +1,140 @@
-import Image from "next/image";
+'use client'
+
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+
+interface Race {
+  id: string
+  title: string
+  date: string
+  location: string
+  distances: string[]
+  registration_end: string | null
+  url: string
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [races, setRaces] = useState<Race[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState({ distance: '', location: '' })
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    fetchRaces()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter])
+
+  async function fetchRaces() {
+    setLoading(true)
+    const params = new URLSearchParams()
+    if (filter.distance) params.set('distance', filter.distance)
+    if (filter.location) params.set('location', filter.location)
+
+    const res = await fetch(`/api/races?${params}`)
+    const data = await res.json()
+    setRaces(Array.isArray(data) ? data : [])
+    setLoading(false)
+  }
+
+  async function triggerCrawl() {
+    const res = await fetch('/api/cron/crawl', {
+      headers: { Authorization: 'Bearer marathon-cron-secret-2024' },
+    })
+    const data = await res.json()
+    alert(data.message || data.error)
+    fetchRaces()
+  }
+
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <header className="bg-blue-600 text-white py-6 px-4 shadow">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">🏃 마라톤 대회 알림</h1>
+            <p className="text-blue-100 text-sm mt-1">국내 마라톤 대회 정보와 알림 서비스</p>
+          </div>
+          <button
+            onClick={triggerCrawl}
+            className="bg-white text-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-50"
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            대회 정보 업데이트
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </header>
+
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-6 flex gap-3 flex-wrap">
+          <select
+            value={filter.distance}
+            onChange={(e) => setFilter((f) => ({ ...f, distance: e.target.value }))}
+            className="border rounded-lg px-3 py-2 text-sm"
+          >
+            <option value="">전체 거리</option>
+            <option value="풀">풀코스 (42.195km)</option>
+            <option value="하프">하프 (21km)</option>
+            <option value="10">10km</option>
+            <option value="5">5km</option>
+          </select>
+          <input
+            type="text"
+            placeholder="지역 검색 (예: 서울)"
+            value={filter.location}
+            onChange={(e) => setFilter((f) => ({ ...f, location: e.target.value }))}
+            className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-[150px]"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        </div>
+
+        {loading ? (
+          <div className="text-center py-16 text-gray-400">불러오는 중...</div>
+        ) : races.length === 0 ? (
+          <div className="text-center py-16 text-gray-400">
+            <p className="text-4xl mb-3">🏃</p>
+            <p>대회 정보가 없습니다.</p>
+            <p className="text-sm mt-1">상단의 &quot;대회 정보 업데이트&quot; 버튼을 눌러주세요.</p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {races.map((race) => (
+              <div key={race.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <h2 className="font-semibold text-lg text-gray-900">{race.title}</h2>
+                    <div className="flex flex-wrap gap-2 mt-2 text-sm text-gray-600">
+                      <span>📅 {race.date}</span>
+                      <span>📍 {race.location}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {race.distances?.map((d) => (
+                        <span key={d} className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">
+                          {d}
+                        </span>
+                      ))}
+                    </div>
+                    {race.registration_end && (
+                      <p className="text-xs text-red-500 mt-2">접수 마감: {race.registration_end}</p>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2 shrink-0">
+                    <a
+                      href={race.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      대회 페이지 →
+                    </a>
+                    <Link
+                      href={`/races/${race.id}`}
+                      className="bg-blue-600 text-white text-sm px-3 py-1.5 rounded-lg text-center hover:bg-blue-700"
+                    >
+                      알림 신청
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </main>
+  )
 }
