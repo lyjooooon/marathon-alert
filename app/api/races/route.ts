@@ -5,20 +5,26 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const distance = searchParams.get('distance')
   const location = searchParams.get('location')
+  const status = searchParams.get('status')
 
-  let query = getSupabase()
-    .from('races')
-    .select('*')
-    .order('date', { ascending: true })
+  const today = new Date().toISOString().split('T')[0]
 
-  if (distance) {
-    query = query.contains('distances', [distance])
+  let query = getSupabase().from('races').select('*')
+
+  if (distance) query = query.contains('distances', [distance])
+  if (location) query = query.ilike('location', `%${location}%`)
+
+  if (status === '접수중') {
+    query = query.lte('registration_start', today).gte('registration_end', today)
+  } else if (status === '접수예정') {
+    query = query.gt('registration_start', today)
+  } else if (status === '접수마감') {
+    query = query.lt('registration_end', today).gt('date', today)
+  } else if (status === '대회종료') {
+    query = query.lt('date', today)
   }
-  if (location) {
-    query = query.ilike('location', `%${location}%`)
-  }
 
-  const { data, error } = await query
+  const { data, error } = await query.order('date', { ascending: true })
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

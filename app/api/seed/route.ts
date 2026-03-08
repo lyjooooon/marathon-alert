@@ -99,7 +99,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km', '5km'],
     registration_start: '2026-01-20',
     registration_end: '2026-04-05',
-    url: 'https://www.suwonmarathon.com',
+    url: 'https://hscity-marathon.com/',
     source: 'sample',
   },
   {
@@ -109,7 +109,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km', '5km'],
     registration_start: '2026-02-15',
     registration_end: '2026-04-30',
-    url: 'https://www.jeonjumarathon.com',
+    url: 'https://marathongo.co.kr/',
     source: 'sample',
   },
   {
@@ -119,7 +119,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km'],
     registration_start: '2026-02-10',
     registration_end: '2026-04-20',
-    url: 'https://www.ulsanmarathon.com',
+    url: 'https://ulsan.run/',
     source: 'sample',
   },
   {
@@ -149,7 +149,7 @@ const sampleRaces = [
     distances: ['하프', '10km', '5km'],
     registration_start: '2025-12-01',
     registration_end: '2026-03-05',
-    url: 'https://www.maehwamarathon.com',
+    url: 'https://marathongo.co.kr/',
     source: 'sample',
   },
   {
@@ -169,7 +169,7 @@ const sampleRaces = [
     distances: ['풀코스', '하프', '10km', '5km'],
     registration_start: '2026-07-01',
     registration_end: '2026-09-25',
-    url: 'https://www.sokchomararathon.com',
+    url: 'https://marathongo.co.kr/',
     source: 'sample',
   },
   {
@@ -179,7 +179,7 @@ const sampleRaces = [
     distances: ['하프', '10km', '5km'],
     registration_start: '2026-02-01',
     registration_end: '2026-04-01',
-    url: 'https://www.hanriverthon.com',
+    url: 'https://marathongo.co.kr/',
     source: 'sample',
   },
   {
