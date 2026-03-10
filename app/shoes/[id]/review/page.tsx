@@ -24,9 +24,8 @@ export default function WriteReviewPage() {
 
   useEffect(() => {
     async function load() {
-      const [productRes, reviewsRes] = await Promise.all([
+      const [productRes] = await Promise.all([
         fetch(`/api/products/${productId}`),
-        fetch(`/api/reviews?product_id=${productId}&sort=recent`),
       ])
       if (productRes.ok) setProduct(await productRes.json())
 
