@@ -7,10 +7,9 @@ import { createClient } from '@/lib/supabase-browser'
 import type { User } from '@supabase/supabase-js'
 
 const NAV_ITEMS = [
-  { label: '대회센터', href: '/', icon: '🏃' },
-  { label: '커뮤니티', href: '/community', icon: '👥' },
-  { label: '정보허브', href: '/info', icon: '📚' },
-  { label: '러닝스토어', href: '/store', icon: '👟' },
+  { label: '러닝화', href: '/shoes', icon: '👟' },
+  { label: '랭킹', href: '/ranking', icon: '🏆' },
+  { label: '제품 제안', href: '/suggest', icon: '✉️' },
 ]
 
 export default function Navbar() {
@@ -47,8 +46,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto w-full px-6 flex items-center h-14 gap-8">
           {/* 로고 */}
           <Link href="/" className="flex items-center gap-2 mr-4 shrink-0">
-            <span className="text-[#FF4D00] font-black text-lg tracking-tight">RUN</span>
-            <span className="text-white font-black text-lg tracking-tight">IN ONE</span>
+            <span className="text-[#FF4D00] font-black text-xl tracking-tight">SOLE</span>
           </Link>
 
           {/* 메뉴 */}
@@ -113,7 +111,7 @@ export default function Navbar() {
 
       {/* 모바일 하단 탭 바 */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0f0f0f]/95 backdrop-blur-sm border-t border-white/5">
-        <div className="grid grid-cols-5 h-16">
+        <div className="grid grid-cols-4 h-16">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}

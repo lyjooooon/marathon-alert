@@ -4,11 +4,8 @@ import { getAdminUser } from '@/lib/admin-auth'
 
 const NAV = [
   { href: '/admin', label: '대시보드', icon: '📊' },
-  { href: '/admin/races', label: '대회 관리', icon: '🏃' },
-  { href: '/admin/columns', label: '전문가 칼럼', icon: '✍️' },
-  { href: '/admin/plans', label: '트레이닝 플랜', icon: '📋' },
-  { href: '/admin/courses', label: '코스 지도', icon: '🗺️' },
-  { href: '/admin/posts', label: '유저 포스트', icon: '💬' },
+  { href: '/admin/products', label: '제품 관리', icon: '👟' },
+  { href: '/admin/suggestions', label: '제품 제안', icon: '📥' },
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -24,8 +21,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="w-56 shrink-0 bg-[#111] border-r border-white/10 fixed top-0 left-0 h-full z-40 flex flex-col pt-6">
         <div className="px-4 mb-6">
           <Link href="/" className="flex items-center gap-1">
-            <span className="text-[#FF4D00] font-black text-lg">RUN</span>
-            <span className="text-white font-black text-lg">IN ONE</span>
+            <span className="text-[#FF4D00] font-black text-lg">SOLE</span>
+            <span className="text-white font-black text-lg"> Admin</span>
           </Link>
           <p className="text-white/30 text-xs mt-0.5">관리자</p>
         </div>

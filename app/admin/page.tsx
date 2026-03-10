@@ -3,28 +3,27 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 
 async function getStats() {
   const db = getSupabaseAdmin()
-  const [races, columns, plans, courses, posts] = await Promise.all([
-    db.from('races').select('id', { count: 'exact', head: true }),
-    db.from('columns').select('id', { count: 'exact', head: true }),
-    db.from('training_plans').select('id', { count: 'exact', head: true }),
-    db.from('course_maps').select('id', { count: 'exact', head: true }),
-    db.from('info_posts').select('id', { count: 'exact', head: true }),
+  const [products, reviews, suggestions] = await Promise.all([
+    db.from('products').select('id', { count: 'exact', head: true }),
+    db.from('reviews').select('id', { count: 'exact', head: true }),
+    db.from('product_suggestions').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
   ])
   return {
-    races: races.count ?? 0,
-    columns: columns.count ?? 0,
-    plans: plans.count ?? 0,
-    courses: courses.count ?? 0,
-    posts: posts.count ?? 0,
+    products: products.count ?? 0,
+    reviews: reviews.count ?? 0,
+    suggestions: suggestions.count ?? 0,
   }
 }
 
 const STAT_CARDS = [
-  { key: 'races', label: '대회', icon: '🏃', href: '/admin/races' },
-  { key: 'columns', label: '전문가 칼럼', icon: '✍️', href: '/admin/columns' },
-  { key: 'plans', label: '트레이닝 플랜', icon: '📋', href: '/admin/plans' },
-  { key: 'courses', label: '코스 지도', icon: '🗺️', href: '/admin/courses' },
-  { key: 'posts', label: '유저 포스트', icon: '💬', href: '/admin/posts' },
+  { key: 'products', label: '제품', icon: '👟', href: '/admin/products' },
+  { key: 'reviews', label: '리뷰', icon: '⭐', href: '/admin/products' },
+  { key: 'suggestions', label: '제안 (검토중)', icon: '📥', href: '/admin/suggestions' },
+]
+
+const NAV_LINKS = [
+  { href: '/admin/products', label: '제품 관리', icon: '👟' },
+  { href: '/admin/suggestions', label: '제품 제안', icon: '📥' },
 ]
 
 export default async function AdminDashboard() {
@@ -33,9 +32,9 @@ export default async function AdminDashboard() {
   return (
     <div>
       <h1 className="text-2xl font-black text-white mb-1">대시보드</h1>
-      <p className="text-white/40 text-sm mb-8">RUN IN ONE 콘텐츠 관리</p>
+      <p className="text-white/40 text-sm mb-8">SOLE 콘텐츠 관리</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+      <div className="grid grid-cols-3 gap-4 mb-10">
         {STAT_CARDS.map((card) => (
           <Link
             key={card.key}
@@ -52,15 +51,15 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {STAT_CARDS.map((card) => (
+        {NAV_LINKS.map((link) => (
           <Link
-            key={card.href}
-            href={card.href}
-            className="flex items-center justify-between bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-4 hover:border-[#FF4D00]/40 hover:bg-[#1a1a1a] transition-all"
+            key={link.href}
+            href={link.href}
+            className="flex items-center justify-between bg-[#1a1a1a] border border-white/10 rounded-xl px-5 py-4 hover:border-[#FF4D00]/40 transition-all"
           >
             <div className="flex items-center gap-3">
-              <span className="text-xl">{card.icon}</span>
-              <span className="text-white font-semibold text-sm">{card.label} 관리</span>
+              <span className="text-xl">{link.icon}</span>
+              <span className="text-white font-semibold text-sm">{link.label}</span>
             </div>
             <span className="text-white/30 text-xs">→</span>
           </Link>
