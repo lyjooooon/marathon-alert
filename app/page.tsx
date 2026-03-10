@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import { createClient } from '@/lib/supabase-browser'
 
 interface Race {
   id: string
@@ -311,7 +312,7 @@ function SubscribeModal({ race, onClose }: { race: Race; onClose: () => void }) 
 // ──────────────────────────────
 // 카드 뷰
 // ──────────────────────────────
-function CardView({ races, onAlert }: { races: Race[]; onAlert: (r: Race) => void }) {
+function CardView({ races, onAlert, wishlist, onWishlist }: { races: Race[]; onAlert: (r: Race) => void; wishlist: Set<string>; onWishlist: (r: Race) => void }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {races.map((race) => {
@@ -367,9 +368,17 @@ function CardView({ races, onAlert }: { races: Race[]; onAlert: (r: Race) => voi
                 <a href={race.url} target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-2 rounded-xl text-sm font-semibold" style={{ background: '#2a2a2a', color: '#ccc', border: '1px solid #333' }}>
                   대회 페이지
                 </a>
+                <button
+                  onClick={() => onWishlist(race)}
+                  title={wishlist.has(race.id) ? '관심 대회에 담김' : '관심 대회 담기'}
+                  className="px-3 py-2 rounded-xl text-sm transition-colors"
+                  style={{ background: wishlist.has(race.id) ? 'rgba(255,77,0,0.2)' : '#2a2a2a', color: wishlist.has(race.id) ? '#FF4D00' : '#555', border: '1px solid #333' }}
+                >
+                  {wishlist.has(race.id) ? '♥' : '♡'}
+                </button>
                 {status !== '대회종료' && (
                   <button onClick={() => onAlert(race)} className="flex-1 text-center py-2 rounded-xl text-sm font-bold text-white" style={{ background: '#FF4D00' }}>
-                    🔔 알림 신청
+                    🔔 알림
                   </button>
                 )}
               </div>
@@ -384,7 +393,7 @@ function CardView({ races, onAlert }: { races: Race[]; onAlert: (r: Race) => voi
 // ──────────────────────────────
 // 리스트 뷰
 // ──────────────────────────────
-function ListView({ races, onAlert }: { races: Race[]; onAlert: (r: Race) => void }) {
+function ListView({ races, onAlert, wishlist, onWishlist }: { races: Race[]; onAlert: (r: Race) => void; wishlist: Set<string>; onWishlist: (r: Race) => void }) {
   return (
     <div className="flex flex-col gap-2">
       {races.map((race) => {
@@ -422,6 +431,13 @@ function ListView({ races, onAlert }: { races: Race[]; onAlert: (r: Race) => voi
               <a href={race.url} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-lg text-center font-semibold" style={{ background: '#2a2a2a', color: '#aaa' }}>
                 페이지
               </a>
+              <button
+                onClick={() => onWishlist(race)}
+                className="text-xs px-3 py-1.5 rounded-lg font-bold text-center transition-colors"
+                style={{ background: wishlist.has(race.id) ? 'rgba(255,77,0,0.2)' : '#2a2a2a', color: wishlist.has(race.id) ? '#FF4D00' : '#888' }}
+              >
+                {wishlist.has(race.id) ? '♥' : '♡'}
+              </button>
               {status !== '대회종료' && (
                 <button onClick={() => onAlert(race)} className="text-xs px-3 py-1.5 rounded-lg font-bold text-white" style={{ background: '#FF4D00' }}>
                   알림
@@ -446,8 +462,35 @@ export default function Home() {
   const [regionFilter, setRegionFilter] = useState('전체')
   const [viewMode, setViewMode] = useState<ViewMode>('card')
   const [selectedRace, setSelectedRace] = useState<Race | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [wishlist, setWishlist] = useState<Set<string>>(new Set())
 
-  useEffect(() => { fetchRaces() }, [statusFilter, distanceFilter, regionFilter])
+  const supabase = createClient()
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUserId(data.user.id)
+        fetch('/api/participations').then(r => r.json()).then((list) => {
+          if (Array.isArray(list)) setWishlist(new Set(list.map((p: { races: { id: string } }) => p.races?.id)))
+        })
+      }
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleWishlist = async (race: Race) => {
+    if (!userId) { window.location.href = '/login?next=/'; return }
+    const isIn = wishlist.has(race.id)
+    if (isIn) return // 이미 담긴 경우 마이페이지로
+    await fetch('/api/participations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ race_id: race.id, status: 'wishlist' }),
+    })
+    setWishlist((prev) => { const s = new Set(prev); s.add(race.id); return s })
+  }
+
+  useEffect(() => { fetchRaces() }, [statusFilter, distanceFilter, regionFilter]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function fetchRaces() {
     setLoading(true)
@@ -475,15 +518,15 @@ export default function Home() {
   })
 
   return (
-    <main className="min-h-screen" style={{ background: '#0f0f0f', color: '#fff' }}>
+    <div className="min-h-screen" style={{ color: '#fff' }}>
       {selectedRace && <SubscribeModal race={selectedRace} onClose={() => setSelectedRace(null)} />}
 
-      {/* 헤더 */}
-      <header style={{ background: '#111', borderBottom: '1px solid #1e1e1e' }} className="px-4 py-4 sticky top-0 z-40">
+      {/* 서브 헤더 — 필터 컨트롤 */}
+      <header style={{ background: '#111', borderBottom: '1px solid #1e1e1e' }} className="px-4 py-3 sticky md:top-14 top-0 z-40">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div>
-            <p className="text-xs font-black tracking-widest" style={{ color: '#FF4D00' }}>PACEMAKER</p>
-            <h1 className="text-lg font-black tracking-tight leading-tight">마라톤 대회 알림</h1>
+            <h1 className="text-base font-black tracking-tight leading-tight">대회 센터</h1>
+            <p className="text-xs" style={{ color: '#555' }}>국내 마라톤 · 러닝 대회 정보</p>
           </div>
           <div className="flex items-center gap-3">
             <p className="text-xs" style={{ color: '#555' }}>{races.length}개 대회</p>
@@ -550,11 +593,11 @@ export default function Home() {
             <p>해당 조건의 대회가 없습니다.</p>
           </div>
         ) : viewMode === 'card' ? (
-          <CardView races={races} onAlert={setSelectedRace} />
+          <CardView races={races} onAlert={setSelectedRace} wishlist={wishlist} onWishlist={handleWishlist} />
         ) : (
-          <ListView races={races} onAlert={setSelectedRace} />
+          <ListView races={races} onAlert={setSelectedRace} wishlist={wishlist} onWishlist={handleWishlist} />
         )}
       </div>
-    </main>
+    </div>
   )
 }

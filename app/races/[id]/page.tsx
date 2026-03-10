@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-browser'
 
 interface Race {
   id: string
@@ -18,6 +18,7 @@ interface Race {
 export default function RaceDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const supabase = createClient()
   const [race, setRace] = useState<Race | null>(null)
   const [form, setForm] = useState({ email: '', notify_days_before: '3' })
   const [submitting, setSubmitting] = useState(false)
